@@ -1,60 +1,56 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 
 function App() {
-  const [nome, setNome]=useState('')
-  const [email, setEmail]=useState('')
-  const [idade, setIdade]=useState('')
+  const [input, setInput] = useState('')
+  const [tarefas, setTarefas] = useState([
+    'pagar a conta de luz',
+    'Estudar react js'
+  ])
 
-  const [user,setUser]=useState({})
+  useEffect(()=>{
+    const tarefasStorage = localStorage.getItem('@tarefa')
+    alert("teste")
+
+    if(tarefasStorage){
+      setTarefas(JSON.parse(tarefasStorage))
+    }
+
+  },[])
+
+  useEffect(()=>{
+      localStorage.setItem('@tarefa', JSON.stringify(tarefas))
+  },[tarefas])
 
   function handleRegister(e){
     e.preventDefault()
 
-
-    alert("usuario registrado com sucesso")
-    setUser({
-      nome: nome,
-      idade: idade,
-      email: email
-    })
+    setTarefas([...tarefas, input])
+    setInput('')
   }
 
   return (
     <div>
       <h1>Cadastrando Usuario</h1>
       <form onSubmit={handleRegister}>
-        <label>Nome:</label>
+        <label>Nome da tarefa:</label><br/>
         <input 
-        placeholder='Digite seu nome'
-        value={nome}
-        onChange={ (e )=> setNome(e.target.value)}
-        /><br/>
-
-        <label>Email:</label>
-        <input 
-        placeholder='Digite seu Email'
-        value={email}
-        onChange={ (e )=> setEmail(e.target.value)}
-        /><br/>
-
-        <label>Idade:</label>
-        <input 
-        placeholder='Digite seu idade'
-        value={idade}
-        onChange={ (e )=> setIdade(e.target.value)}
+        placeholder='Digite uma tarefa'
+        value={input}
+        onChange={ (e )=> setInput(e.target.value)}
         /><br/>
 
         <button type='submit'>Registrar</button>
       </form>
 
       <br/><br/>
+ 
+        <ul>
+          {tarefas.map (tarefa =>(
+            <li key={tarefa}>{tarefa}</li>
+          ))}
+        </ul>
 
-    <div>
-      <sapn>Bem vindo: {user.nome}</sapn><br/>
-      <sapn>Idade {user.idade}:</sapn><br/>
-      <sapn>Email: {user.email}</sapn><br/>
-    </div>
       </div>
   )
 }
